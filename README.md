@@ -11,8 +11,6 @@ yarn start
 ```
 The application works with the websocket running on chat-ws.
 Default address is `ws://127.0.0.1:1337`
-Checkout `.env` file to custom the app.
-
 
 ## Deploy
 
