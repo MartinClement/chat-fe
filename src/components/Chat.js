@@ -87,6 +87,7 @@ class Chat extends React.Component {
 
   state = {
     status: '',
+    connecting: true,
     error: '',
     chatHistory: [],
     input: '',
@@ -99,14 +100,17 @@ class Chat extends React.Component {
   }
 
   componentWillMount = () => {
-    const { connection } = this.props
-    this._connection = connection
-    this._connection.onopen = this.handleConnectionOpen
-    this._connection.onerror = this.handleConnectionError
-    this._connection.onmessage = this.handleConnectionMessage
+    // nothing
   }
 
   componentDidMount() {
+    const { connection } = this.props
+    this._connection = connection
+    console.log(this._connection)
+    this._connection.onopen = this.handleConnectionOpen
+    this._connection.onerror = this.handleConnectionError
+    this._connection.onmessage = this.handleConnectionMessage
+
     document.addEventListener('keydown', this.handleSubmit)
     this._MO = new MutationObserver(this.scrollToBottom)
     this._MO.observe(this._message.current, { childList: true })
@@ -114,8 +118,6 @@ class Chat extends React.Component {
 
   handleSubmit = e => {
     const v = this._input.current.value
-
-    const { name } = this.state
 
     if (v !== '' && e.keyCode === 13) {
       this._connection.send(v)
@@ -129,7 +131,8 @@ class Chat extends React.Component {
   }
 
   handleConnectionOpen = () => {
-    this.setState({ status: 'connection ...' })
+    console.log('opened')
+    this.setState({ status: 'Enter your name ...', connecting: false })
   }
 
   handleConnectionError = err => {
@@ -166,20 +169,26 @@ class Chat extends React.Component {
   }
 
   render() {
-    const { name, chatHistory, color, input, status, error } = this.state
+    const { name, chatHistory, color, input, connecting, status, error } = this.state
     return (
       <Wrapper>
         <Messages ref={this._message}>
           <Status status={status}>
-            {status}
-            {name && <Name color={color}>{`as : ${name}`}</Name>}
-            {error !== '' && ` : ${error}`}
+            {connecting ? (
+              'Trying to reach the server ...'
+            ) : (
+              <>
+                {status}
+                {name && <Name color={color}>{`as : ${name}`}</Name>}
+                {error !== '' && ` : ${error}`}
+              </>
+            )}
           </Status>
           {chatHistory.map(m => (
             <Spring from={{ x: -100 }} to={{ x: 0 }} config={{ tension: 280, friction: 20 }} native>
               {({ x }) => (
                 <Msg
-                  ref={m.id}
+                  kek={m.id}
                   style={{ transform: interpolate(x, x => `translate3d(${x}%, 0, 0)`) }}
                 >
                   <Author color={m.color}>{`${m.author} [${new Date(
@@ -197,6 +206,7 @@ class Chat extends React.Component {
           value={input}
           onChange={e => this.handleInputChange(e)}
           placeholder={name ? 'Enter your name' : 'Your Message ...'}
+          disabled={connecting}
         />
       </Wrapper>
     )
