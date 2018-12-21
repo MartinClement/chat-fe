@@ -1,4 +1,4 @@
-# CHAT-FE
+# chat-fe
 
 This project corresponds to the chat front end (chat-fe) of my [chat-fs](https://github.com/MartinClement/chat-ws) projet
 
