@@ -1,6 +1,6 @@
 # chat-fe
 
-This project corresponds to the chat front end (chat-fe) of my [chat-fs](https://github.com/MartinClement/chat-ws) projet
+This project corresponds to the chat front end (chat-fe) of my [chat-ws](https://github.com/MartinClement/chat-ws) projet
 
 ## Pull and start
 This is a classic react app. Just pull the repo then :
