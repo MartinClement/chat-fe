@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import './App.css'
 import Chat from 'components/Chat'
 
+const WEB_SOCKET_URL = 'ws://127.0.0.1:8080'
+
 class App extends Component {
   _webSocket = false
   _connection = null
@@ -10,7 +12,7 @@ class App extends Component {
     this._webSocket = window.WebSocket || window.MozWebSocket
 
     if (this._webSocket) {
-      this._connection = new this._webSocket('ws://medlu-hill.us.openode.io')
+      this._connection = new this._webSocket(WEB_SOCKET_URL)
     }
   }
 
