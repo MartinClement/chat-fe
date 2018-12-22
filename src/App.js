@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import Chat from 'components/Chat'
 
-const WEB_SOCKET_URL = 'ws://127.0.0.1:1337'
+const WEB_SOCKET_URL = 'ws://127.0.0.1:8080'
 
 class App extends Component {
   _webSocket = false
