@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spring, animated, interpolate } from 'react-spring'
+import IconLoader from 'icons/Loader'
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -15,8 +16,6 @@ const Wrapper = styled.div`
 
   & > * {
     padding: 10px;
-    border: 3px solid #fff;
-    border-radius: 3px;
   }
 `
 
@@ -33,6 +32,7 @@ const Status = styled.div`
     border: 2px solid #fff;
     display: flex;
     background-color: #424242;
+    z-index: 1;
 `
 
 const Name = styled.div`
@@ -45,6 +45,7 @@ const Messages = styled.div`
   flex-grow: 1;
   padding: 40px 0;
   overflow-y: scroll;
+  display: ${p => p.display};
 `
 
 const Msg = styled(animated.div)`
@@ -63,11 +64,12 @@ const Author = styled.div`
 `
 
 const Input = styled.input`
-  background-color: #424242;
-  color: #fff;
+  background-color: #fff;
+  color: #424242;
   width: 100%;
   height: 40px;
   box-sizing: border-box;
+  border: none;
   &:focus {
     outline: none;
   }
@@ -106,7 +108,6 @@ class Chat extends React.Component {
   componentDidMount() {
     const { connection } = this.props
     this._connection = connection
-    console.log(this._connection)
     this._connection.onopen = this.handleConnectionOpen
     this._connection.onerror = this.handleConnectionError
     this._connection.onmessage = this.handleConnectionMessage
@@ -172,18 +173,21 @@ class Chat extends React.Component {
     const { name, chatHistory, color, input, connecting, status, error } = this.state
     return (
       <Wrapper>
-        <Messages ref={this._message}>
-          <Status status={status}>
-            {connecting ? (
-              'Trying to reach the server ...'
-            ) : (
-              <>
-                {status}
-                {name && <Name color={color}>{`as : ${name}`}</Name>}
-                {error !== '' && ` : ${error}`}
-              </>
-            )}
-          </Status>
+        <Status status={status}>
+          {connecting ? (
+            <>
+              <span>Trying to reach the server</span>
+              <IconLoader style={{ marginLeft: '15px' }} height={20} width={30} />
+            </>
+          ) : (
+            <>
+              {status}
+              {name && <Name color={color}>{`as : ${name}`}</Name>}
+              {error !== '' && ` : ${error}`}
+            </>
+          )}
+        </Status>
+        <Messages ref={this._message} display={name ? 'block' : 'none'}>
           {chatHistory.map(m => (
             <Spring from={{ x: -100 }} to={{ x: 0 }} config={{ tension: 280, friction: 20 }} native>
               {({ x }) => (
@@ -205,7 +209,7 @@ class Chat extends React.Component {
           type="text"
           value={input}
           onChange={e => this.handleInputChange(e)}
-          placeholder={name ? 'Enter your name' : 'Your Message ...'}
+          placeholder={!name ? 'Enter your name' : 'Your message ...'}
           disabled={connecting}
         />
       </Wrapper>
